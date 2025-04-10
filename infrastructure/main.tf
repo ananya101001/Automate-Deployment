@@ -6,7 +6,7 @@ provider "aws" {
 variable "bucket_name" {
   description = "The name of the S3 bucket"
   type        = string
-  default     = "my_bucket" # <--- CHANGE THIS TO BE GLOBALLY UNIQUE
+  default     = "my-static-site-ananya-20250410" # <--- CHANGE THIS TO BE GLOBALLY UNIQUE
 }
 
 resource "aws_s3_bucket" "site_bucket" {
