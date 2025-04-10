@@ -47,7 +47,7 @@ jobs:
       - name: Deploy site files to S3
         run: |
           # Replace with your unique bucket name used in main.tf
-          BUCKET_NAME="my-static-site-ananya-20250410" # <--- SAME UNIQUE NAME AS IN TERRAFORM
+          BUCKET_NAME="my-static-site-ananya-202504101" # <--- SAME UNIQUE NAME AS IN TERRAFORM
           # Sync files - assuming index.html is in the root. If in src/, change '.' to './src'
           aws s3 sync . s3://${BUCKET_NAME}/ --delete
         # working-directory: ./src # Uncomment and adjust sync path if your site files are in src/
