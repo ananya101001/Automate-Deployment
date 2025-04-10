@@ -1,0 +1,59 @@
+name: Destroy Infrastructure
+
+# Allow manual trigger from GitHub Actions UI
+on:
+  workflow_dispatch:
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    # Granting permissions for fetching OIDC token (if using OIDC)
+    # If using Access Keys, you might only need 'contents: read'
+    permissions:
+      id-token: write # Required for requesting the JWT for OIDC
+      contents: read  # Required for checking out code
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        # Use the SAME method (OIDC or Access Keys) as your deploy workflow
+        # Ensure the credentials/role have sufficient permissions to DELETE resources
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          # If using Access Keys:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 # Must match the region in your terraform file
+
+          # If using OIDC (delete the key lines above if using this):
+          # role-to-assume: arn:aws:iam::ACCOUNT-ID:role/YOUR_GITHUB_ACTIONS_ROLE_NAME # Replace with your Role ARN
+          # aws-region: us-east-1 # Must match the region in your terraform file
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        # Optionally specify terraform_version if needed
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        working-directory: ./infrastructure # Run in the infrastructure subfolder
+
+      - name: Terraform Destroy
+        id: destroy
+        # Use -auto-approve to automatically confirm the destroy prompt
+        run: terraform destroy -auto-approve -no-color
+        working-directory: ./infrastructure
+
+      - name: Update Job Summary on Destroy
+        if: always() # Run even if previous steps fail (to report status)
+        run: |
+          echo "### Destroy Infrastructure Summary" >> $GITHUB_STEP_SUMMARY
+          if ${{ steps.destroy.outcome == 'success' }}; then
+            echo "- Terraform Destroy: **Success**" >> $GITHUB_STEP_SUMMARY
+            echo "- All resources defined in ./infrastructure should be removed." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- Terraform Destroy: **Failed**" >> $GITHUB_STEP_SUMMARY
+            echo "- Manual cleanup in AWS Console might be required." >> $GITHUB_STEP_SUMMARY
+          fi
