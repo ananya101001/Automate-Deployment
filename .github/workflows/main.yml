@@ -52,6 +52,17 @@ jobs:
           aws s3 sync . s3://${BUCKET_NAME}/ --delete
         # working-directory: ./src # Uncomment and adjust sync path if your site files are in src/
 
+      - name: Update Job Summary
+        run: |
+          echo "### Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Terraform Apply:** Success" >> $GITHUB_STEP_SUMMARY
+          echo "- **S3 Sync:** Success" >> $GITHUB_STEP_SUMMARY
+          WEBSITE_URL=$(cd ./infrastructure && terraform output -raw website_endpoint)
+          echo "- **Website URL:** http://${WEBSITE_URL}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY # Add a newline
+          echo "[Visit Deployed Site](http://${WEBSITE_URL})"
+          >> $GITHUB_STEP_SUMMARY
+
       - name: Output Website URL
         run: |
           # Extract the URL from Terraform output (simple approach)
