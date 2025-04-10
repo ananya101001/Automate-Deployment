@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Simple CI/CD Website</title>
+</head>
+<body>
+    <h1>Hello from CI/CD!</h1>
+    <p>This website was deployed automatically using GitHub Actions and Terraform to AWS S3.</p>
+    <p id="timestamp">Deployment time: Generating...</p>
+    <script>
+      document.getElementById('timestamp').innerText = 'Deployment time: ' + new Date().toUTCString();
+    </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+name: Deploy Static Site to S3
+
+on:
+  push:
+    branches:
+      - main # Trigger deployment only on pushes to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Granting permissions for fetching OIDC token and assuming role (optional but good practice)
+    # If not using OIDC, you'll rely solely on the AWS_ACCESS_KEY_ID/SECRET_ACCESS_KEY secrets
+    permissions:
+      id-token: write # required for OIDC if you use it
+      contents: read  # required to checkout the code
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 # Must match the region in your terraform file
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        # Optionally specify terraform_version if needed
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        working-directory: ./infrastructure # Run in the infrastructure subfolder
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        working-directory: ./infrastructure
+
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply -auto-approve -no-color
+        working-directory: ./infrastructure
+
+      - name: Deploy site files to S3
+        run: |
+          # Replace with your unique bucket name used in main.tf
+          BUCKET_NAME="my_bucket" # <--- SAME UNIQUE NAME AS IN TERRAFORM
+          # Sync files - assuming index.html is in the root. If in src/, change '.' to './src'
+          aws s3 sync . s3://${BUCKET_NAME}/ --delete
+        # working-directory: ./src # Uncomment and adjust sync path if your site files are in src/
+
+      - name: Output Website URL
+        run: |
+          # Extract the URL from Terraform output (simple approach)
+          WEBSITE_URL=$(terraform output -raw website_endpoint)
+          echo "Website deployed to: http://${WEBSITE_URL}"
+        working-directory: ./infrastructure
