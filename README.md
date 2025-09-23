@@ -1,4 +1,4 @@
-# 🚀 Automate Deployment
+# Automate Deployment
 
 A fully automated CI/CD pipeline for building, testing, and deploying containerized applications. This project demonstrates how to integrate Docker and GitHub Actions to streamline the development workflow from code commit to deployment.
 
@@ -42,7 +42,7 @@ A fully automated CI/CD pipeline for building, testing, and deploying containeri
 
 ![CI/CD Workflow](https://github.com/ananya101001/Automate-Deployment/blob/main/assets/cicd-flow.png) <!-- optional diagram -->
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
