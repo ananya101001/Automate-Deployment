@@ -42,6 +42,7 @@ A fully automated CI/CD pipeline for building, testing, and deploying containeri
 
 Architecture diagram 
 
+
 ```mermaid
 flowchart LR
     A[Developer PC] --> B[GitHub Repo]
@@ -50,7 +51,8 @@ flowchart LR
     C --> E[AWS CLI]
     D --> F[AWS IAM]
     E --> G[AWS S3]
-    G <-- User Browser
+    H[User Browser] --> G
+
 ```
 
 ##  Getting Started
