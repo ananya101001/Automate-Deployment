@@ -40,7 +40,18 @@ A fully automated CI/CD pipeline for building, testing, and deploying containeri
 5. **Image Pushed to Registry (Optional)**
 6. **Application Deployed to Hosting Service**
 
-![CI/CD Workflow](https://github.com/ananya101001/Automate-Deployment/blob/main/assets/cicd-flow.png) <!-- optional diagram -->
+Architecture diagram 
+
+```mermaid
+flowchart LR
+    A[Developer PC] --> B[GitHub Repo]
+    B --> C[GitHub Actions]
+    C --> D[Terraform]
+    C --> E[AWS CLI]
+    D --> F[AWS IAM]
+    E --> G[AWS S3]
+    G <-- User Browser
+```
 
 ##  Getting Started
 
