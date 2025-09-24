@@ -10,7 +10,7 @@ A fully automated CI/CD pipeline for building, testing, and deploying containeri
 - 🚀 Continuous deployment on every push to the main branch
 - 📦 Environment-specific deployment support
 
-## 🛠️ Technologies Used
+## 🛠️ Technologies Used 
 
 - **Docker** – for containerizing the application
 - **GitHub Actions** – for CI/CD workflows
